@@ -1,48 +1,133 @@
-<style>
-  /* ... الباقي نفس الكود السابق ... */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine ❤️</title>
 
-  /* تأثير الوميض */
+<style>
+  * { box-sizing: border-box; font-family: Arial, sans-serif; }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+  }
+
+  h1 {
+    font-weight: bold;
+    font-size: 26px;
+    line-height: 1.4;
+    white-space: pre-line;
+    z-index: 2;
+  }
+
+  .buttons {
+    position: relative;
+    width: 320px;
+    height: 160px;
+    margin-top: 30px;
+    z-index: 2;
+  }
+
+  button {
+    padding: 14px 28px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    position: absolute;
+  }
+
+  #yesBtn { background-color: #ff4d6d; color: white; left: 0; top: 0; }
+  #noBtn { background-color: #ccc; left: auto; right: 0; top: 0; }
+
+  .heart {
+    position: fixed;
+    bottom: -20px;
+    font-size: 24px;
+    animation: floatUp linear forwards;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes floatUp {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-120vh); opacity: 0; }
+  }
+
+  #flashOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+    display: none;
+  }
+
   @keyframes flashRedWhite {
-    0%, 100% { background-color: white; }
-    50% { background-color: red; }
+    0%, 100% { background-color: white; opacity: 0.7; }
+    50% { background-color: red; opacity: 0.7; }
   }
 </style>
+</head>
+
+<body>
+
+<h1 id="question">
+Jolie, my beautiful girlfriend and the love of my life…
+Will you be my valentine?
+</h1>
+
+<div class="buttons">
+  <button id="yesBtn">Yes</button>
+  <button id="noBtn">No</button>
+</div>
+
+<div id="flashOverlay"></div>
+
+<audio id="alarmSound">
+  <source src="https://www.soundjay.com/misc/sounds/alarm-buzzer-1.mp3" type="audio/mpeg">
+</audio>
 
 <script>
   const noBtn = document.getElementById("noBtn");
   const yesBtn = document.getElementById("yesBtn");
   const question = document.getElementById("question");
   const alarm = document.getElementById("alarmSound");
+  const flashOverlay = document.getElementById("flashOverlay");
 
   let noClicks = 0;
 
   noBtn.addEventListener("click", () => {
     noClicks++;
 
-    // حدود الشاشة الحالية (للموبايل والكمبيوتر)
     const maxX = window.innerWidth - noBtn.offsetWidth - 10;
     const maxY = window.innerHeight - noBtn.offsetHeight - 10;
 
-    // تحرك الزر لمسافات عشوائية أكبر
     noBtn.style.left = Math.random() * maxX + "px";
     noBtn.style.top = Math.random() * maxY + "px";
 
     if (noClicks >= 5) {
-      // تشغيل صوت الإنذار
       alarm.play();
-
-      // إزالة الزر
       noBtn.style.display = "none";
 
-      // اهتزاز الهاتف (3 ثواني)
-      if (navigator.vibrate) {
-        navigator.vibrate(3000);
-      }
+      if (navigator.vibrate) navigator.vibrate(3000);
 
-      // عمل وميض للشاشة لمدة 3 ثواني
-      document.body.style.animation = "flashRedWhite 0.3s infinite";
+      flashOverlay.style.display = "block";
+      flashOverlay.style.animation = "flashRedWhite 0.3s infinite";
+
       setTimeout(() => {
-        document.body.style.animation = "";
+        flashOverlay.style.animation = "";
+        flashOverlay.style.display = "none";
       }, 3000);
 
       question.innerText = "حاج تكبسي نو احسنلك 😠";
@@ -59,9 +144,7 @@
     yesBtn.style.display = "none";
 
     setInterval(() => {
-      for (let i = 0; i < 12; i++) {
-        createHeart();
-      }
+      for (let i = 0; i < 12; i++) createHeart();
     }, 300);
   });
 
@@ -76,3 +159,6 @@
     setTimeout(() => heart.remove(), 7000);
   }
 </script>
+
+</body>
+</html>
