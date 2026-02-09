@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +12,7 @@
   body {
     margin: 0;
     height: 100vh;
-    background: white;
+    background: #ffc0cb;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -21,7 +23,6 @@
   }
 
   h1 {
-    font-weight: bold;
     font-size: 26px;
     line-height: 1.4;
     white-space: pre-line;
@@ -43,18 +44,27 @@
     border-radius: 10px;
     cursor: pointer;
     position: absolute;
+    transition: left 0.2s ease, top 0.2s ease, transform 0.15s ease;
   }
 
-  #yesBtn { background-color: #ff4d6d; color: white; left: 0; top: 0; }
-  #noBtn { background-color: #ccc; left: auto; right: 0; top: 0; }
+  #yesBtn {
+    background-color: #ff4d6d;
+    color: white;
+    left: 0;
+    top: 0;
+  }
+
+  #noBtn {
+    background-color: #ccc;
+    right: 0;
+    top: 0;
+  }
 
   .heart {
     position: fixed;
     bottom: -20px;
-    font-size: 24px;
-    animation: floatUp linear forwards;
     pointer-events: none;
-    z-index: 1;
+    animation: floatUp linear forwards;
   }
 
   @keyframes floatUp {
@@ -64,18 +74,15 @@
 
   #flashOverlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     pointer-events: none;
-    z-index: 999;
     display: none;
+    z-index: 999;
   }
 
-  @keyframes flashRedWhite {
-    0%, 100% { background-color: white; opacity: 0.7; }
-    50% { background-color: red; opacity: 0.7; }
+  @keyframes flash {
+    0%,100% { background: white; opacity: 0.7; }
+    50% { background: red; opacity: 0.7; }
   }
 </style>
 </head>
@@ -103,34 +110,49 @@ Will you be my valentine?
   const yesBtn = document.getElementById("yesBtn");
   const question = document.getElementById("question");
   const alarm = document.getElementById("alarmSound");
-  const flashOverlay = document.getElementById("flashOverlay");
+  const flash = document.getElementById("flashOverlay");
 
   let noClicks = 0;
 
   noBtn.addEventListener("click", () => {
     noClicks++;
 
-    const maxX = window.innerWidth - noBtn.offsetWidth - 10;
-    const maxY = window.innerHeight - noBtn.offsetHeight - 10;
+    const w = noBtn.offsetWidth;
+    const h = noBtn.offsetHeight;
 
-    noBtn.style.left = Math.random() * maxX + "px";
-    noBtn.style.top = Math.random() * maxY + "px";
+    const maxX = window.innerWidth - w - 10;
+    const maxY = window.innerHeight - h - 10;
 
-    if (noClicks >= 5) {
+    let newX = noBtn.offsetLeft + (Math.random() * 300 - 150);
+    let newY = noBtn.offsetTop + (Math.random() * 300 - 150);
+
+    newX = Math.max(0, Math.min(maxX, newX));
+    newY = Math.max(0, Math.min(maxY, newY));
+
+    noBtn.style.transform = "scale(1.35)";
+    setTimeout(() => noBtn.style.transform = "scale(1)", 120);
+
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
+
+    if (noClicks === 5) {
       alarm.play();
-      noBtn.style.display = "none";
-
       if (navigator.vibrate) navigator.vibrate(3000);
 
-      flashOverlay.style.display = "block";
-      flashOverlay.style.animation = "flashRedWhite 0.3s infinite";
-
+      flash.style.display = "block";
+      flash.style.animation = "flash 0.25s infinite";
       setTimeout(() => {
-        flashOverlay.style.animation = "";
-        flashOverlay.style.display = "none";
+        flash.style.display = "none";
+        flash.style.animation = "";
       }, 3000);
 
       question.innerText = "حاج تكبسي نو احسنلك 😠";
+
+      yesBtn.style.position = "fixed";
+      yesBtn.style.left = "50%";
+      yesBtn.style.top = "50%";
+      yesBtn.style.transform = "translate(-50%, -50%) scale(2.2)";
+      yesBtn.style.fontSize = "36px";
     }
   });
 
@@ -140,12 +162,12 @@ Will you be my valentine?
       "I love you my little beautiful stupid princess 💋\n" +
       "Happy Valentine ❤️";
 
-    noBtn.style.display = "none";
     yesBtn.style.display = "none";
+    noBtn.style.display = "none";
 
     setInterval(() => {
-      for (let i = 0; i < 12; i++) createHeart();
-    }, 300);
+      for (let i = 0; i < 30; i++) createHeart();
+    }, 180);
   });
 
   function createHeart() {
@@ -153,10 +175,10 @@ Will you be my valentine?
     heart.className = "heart";
     heart.innerText = "❤️";
     heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.fontSize = 20 + Math.random() * 30 + "px";
-    heart.style.animationDuration = 3 + Math.random() * 3 + "s";
-    document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 7000);
+    heart.style.fontSize = 18 + Math.random() * 40 + "px";
+    heart.style.animationDuration = 2 + Math.random() * 2 + "s";
+   document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
   }
 </script>
 
