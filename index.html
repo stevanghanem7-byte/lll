@@ -43,6 +43,7 @@
     border-radius: 10px;
     cursor: pointer;
     position: absolute;
+    transition: left 0.2s ease, top 0.2s ease;
   }
 
   #yesBtn { background-color: #ff4d6d; color: white; left: 0; top: 0; }
@@ -110,11 +111,26 @@ Will you be my valentine?
   noBtn.addEventListener("click", () => {
     noClicks++;
 
-    const maxX = window.innerWidth - noBtn.offsetWidth - 10;
-    const maxY = window.innerHeight - noBtn.offsetHeight - 10;
+    const btnWidth = noBtn.offsetWidth;
+    const btnHeight = noBtn.offsetHeight;
+    const maxX = window.innerWidth - btnWidth - 10;
+    const maxY = window.innerHeight - btnHeight - 10;
 
-    noBtn.style.left = Math.random() * maxX + "px";
-    noBtn.style.top = Math.random() * maxY + "px";
+    // حركة مضحكة: يهرب قريب من مكانه الحالي
+    const offsetX = (Math.random() * 150) - 75; // -75 إلى +75 px
+    const offsetY = (Math.random() * 150) - 75; // -75 إلى +75 px
+
+    let newLeft = noBtn.offsetLeft + offsetX;
+    let newTop = noBtn.offsetTop + offsetY;
+
+    // التأكد أن الزر داخل الشاشة
+    if (newLeft < 0) newLeft = 0;
+    if (newLeft > maxX) newLeft = maxX;
+    if (newTop < 0) newTop = 0;
+    if (newTop > maxY) newTop = maxY;
+
+    noBtn.style.left = newLeft + "px";
+    noBtn.style.top = newTop + "px";
 
     if (noClicks >= 5) {
       alarm.play();
@@ -153,7 +169,8 @@ Will you be my valentine?
     heart.className = "heart";
     heart.innerText = "❤️";
     heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.fontSize = 20 + Math.random() * 30 + "px";
+    heart.style.
+     fontSize = 20 + Math.random() * 30 + "px";
     heart.style.animationDuration = 3 + Math.random() * 3 + "s";
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 7000);
