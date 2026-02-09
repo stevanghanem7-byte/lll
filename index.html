@@ -1,0 +1,78 @@
+<style>
+  /* ... الباقي نفس الكود السابق ... */
+
+  /* تأثير الوميض */
+  @keyframes flashRedWhite {
+    0%, 100% { background-color: white; }
+    50% { background-color: red; }
+  }
+</style>
+
+<script>
+  const noBtn = document.getElementById("noBtn");
+  const yesBtn = document.getElementById("yesBtn");
+  const question = document.getElementById("question");
+  const alarm = document.getElementById("alarmSound");
+
+  let noClicks = 0;
+
+  noBtn.addEventListener("click", () => {
+    noClicks++;
+
+    // حدود الشاشة الحالية (للموبايل والكمبيوتر)
+    const maxX = window.innerWidth - noBtn.offsetWidth - 10;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 10;
+
+    // تحرك الزر لمسافات عشوائية أكبر
+    noBtn.style.left = Math.random() * maxX + "px";
+    noBtn.style.top = Math.random() * maxY + "px";
+
+    if (noClicks >= 5) {
+      // تشغيل صوت الإنذار
+      alarm.play();
+
+      // إزالة الزر
+      noBtn.style.display = "none";
+
+      // اهتزاز الهاتف (3 ثواني)
+      if (navigator.vibrate) {
+        navigator.vibrate(3000);
+      }
+
+      // عمل وميض للشاشة لمدة 3 ثواني
+      document.body.style.animation = "flashRedWhite 0.3s infinite";
+      setTimeout(() => {
+        document.body.style.animation = "";
+      }, 3000);
+
+      question.innerText = "حاج تكبسي نو احسنلك 😠";
+    }
+  });
+
+  yesBtn.addEventListener("click", () => {
+    question.innerText =
+      "I knew you wouldn’t say no forever 😉🫂❤️\n" +
+      "I love you my little beautiful stupid princess 💋\n" +
+      "Happy Valentine ❤️";
+
+    noBtn.style.display = "none";
+    yesBtn.style.display = "none";
+
+    setInterval(() => {
+      for (let i = 0; i < 12; i++) {
+        createHeart();
+      }
+    }, 300);
+  });
+
+  function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerText = "❤️";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.fontSize = 20 + Math.random() * 30 + "px";
+    heart.style.animationDuration = 3 + Math.random() * 3 + "s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 7000);
+  }
+</script>
