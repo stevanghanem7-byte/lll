@@ -7,83 +7,100 @@
 <title>Valentine ❤️</title>
 
 <style>
-  * { box-sizing: border-box; font-family: Arial, sans-serif; }
+*{box-sizing:border-box;font-family:Arial,sans-serif}
 
-  body {
-    margin: 0;
-    height: 100vh;
-    background: #ffc0cb;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    text-align: center;
-    position: relative;
-  }
+body{
+margin:0;
+height:100vh;
+background:#ffc0cb;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+text-align:center;
+}
 
-  h1 {
-    font-size: 26px;
-    line-height: 1.4;
-    white-space: pre-line;
-    z-index: 2;
-  }
+h1{
+font-size:26px;
+line-height:1.4;
+white-space:pre-line;
+transition:all .3s ease;
+z-index:3;
+}
 
-  .buttons {
-    position: relative;
-    width: 320px;
-    height: 160px;
-    margin-top: 30px;
-    z-index: 2;
-  }
+.warning{font-size:34px;margin-bottom:70px}
 
-  button {
-    padding: 14px 28px;
-    font-size: 18px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    position: absolute;
-    transition: left 0.2s ease, top 0.2s ease, transform 0.15s ease;
-  }
+.buttons{position:relative;width:320px;height:160px;z-index:3}
 
-  #yesBtn {
-    background-color: #ff4d6d;
-    color: white;
-    left: 0;
-    top: 0;
-  }
+button{
+padding:14px 28px;
+font-size:18px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+position:absolute;
+transition:all .2s ease;
+}
 
-  #noBtn {
-    background-color: #ccc;
-    right: 0;
-    top: 0;
-  }
+#yesBtn{background:#ff4d6d;color:#fff;left:0;top:0}
+#noBtn{background:#ccc;right:0;top:0}
 
-  .heart {
-    position: fixed;
-    bottom: -20px;
-    pointer-events: none;
-    animation: floatUp linear forwards;
-  }
+.pulse{
+animation:pulse 1s infinite;
+}
 
-  @keyframes floatUp {
-    from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(-120vh); opacity: 0; }
-  }
+@keyframes pulse{
+0%{transform:scale(2.2)}
+50%{transform:scale(2.35)}
+100%{transform:scale(2.2)}
+}
 
-  #flashOverlay {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    display: none;
-    z-index: 999;
-  }
+.heart{
+position:fixed;
+bottom:-20px;
+pointer-events:none;
+animation:floatUp linear forwards;
+opacity:.8;
+}
 
-  @keyframes flash {
-    0%,100% { background: white; opacity: 0.7; }
-    50% { background: red; opacity: 0.7; }
-  }
+@keyframes floatUp{
+from{transform:translateY(0)}
+to{transform:translateY(-120vh);opacity:0}
+}
+
+.bg-heart{
+position:fixed;
+font-size:80px;
+opacity:.15;
+animation:drift 20s linear infinite;
+}
+
+@keyframes drift{
+from{transform:translateY(110vh)}
+to{transform:translateY(-120vh)}
+}
+
+#flash{
+position:fixed;
+inset:0;
+display:none;
+pointer-events:none;
+z-index:9;
+animation:flash .25s infinite;
+}
+
+@keyframes flash{
+0%,100%{background:white;opacity:.7}
+50%{background:red;opacity:.7}
+}
+
+#countdown{
+font-size:40px;
+margin-bottom:30px;
+display:none;
+z-index:3;
+}
 </style>
 </head>
 
@@ -94,93 +111,109 @@ Jolie, my beautiful girlfriend and the love of my life…
 Will you be my valentine?
 </h1>
 
+<div id="countdown"></div>
+
 <div class="buttons">
-  <button id="yesBtn">Yes</button>
-  <button id="noBtn">No</button>
+<button id="yesBtn">Yes</button>
+<button id="noBtn">No</button>
 </div>
 
-<div id="flashOverlay"></div>
+<div id="flash"></div>
 
-<audio id="alarmSound">
-  <source src="https://www.soundjay.com/misc/sounds/alarm-buzzer-1.mp3" type="audio/mpeg">
+<audio id="noSound">
+<source src="https://www.soundjay.com/buttons/sounds/button-10.mp3">
+</audio>
+
+<audio id="alarm">
+<source src="https://www.soundjay.com/misc/sounds/alarm-buzzer-1.mp3">
+</audio>
+
+<audio id="loveMusic" loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
 </audio>
 
 <script>
-  const noBtn = document.getElementById("noBtn");
-  const yesBtn = document.getElementById("yesBtn");
-  const question = document.getElementById("question");
-  const alarm = document.getElementById("alarmSound");
-  const flash = document.getElementById("flashOverlay");
+const noBtn=document.getElementById("noBtn");
+const yesBtn=document.getElementById("yesBtn");
+const q=document.getElementById("question");
+const flash=document.getElementById("flash");
+const alarm=document.getElementById("alarm");
+const noSound=document.getElementById("noSound");
+const music=document.getElementById("loveMusic");
+const cd=document.getElementById("countdown");
 
-  let noClicks = 0;
+let clicks=0;
 
-  noBtn.addEventListener("click", () => {
-    noClicks++;
+noBtn.onclick=()=>{
+clicks++;
+noSound.play();
 
-    const w = noBtn.offsetWidth;
-    const h = noBtn.offsetHeight;
+if(clicks<5){
+let dx=(Math.random()*300)-150;
+let dy=(Math.random()*300)-150;
+let x=noBtn.offsetLeft+dx;
+let y=noBtn.offsetTop+dy;
 
-    const maxX = window.innerWidth - w - 10;
-    const maxY = window.innerHeight - h - 10;
+x=Math.max(0,Math.min(window.innerWidth-noBtn.offsetWidth,x));
+y=Math.max(0,Math.min(window.innerHeight-noBtn.offsetHeight,y));
 
-    let newX = noBtn.offsetLeft + (Math.random() * 300 - 150);
-    let newY = noBtn.offsetTop + (Math.random() * 300 - 150);
+noBtn.style.left=x+"px";
+noBtn.style.top=y+"px";
 
-    newX = Math.max(0, Math.min(maxX, newX));
-    newY = Math.max(0, Math.min(maxY, newY));
+if(x<30||y<30||x>window.innerWidth-100||y>window.innerHeight-80){
+document.body.style.transform="translateX(5px)";
+setTimeout(()=>document.body.style.transform="",60);
+}
+}
 
-    noBtn.style.transform = "scale(1.35)";
-    setTimeout(() => noBtn.style.transform = "scale(1)", 120);
+if(clicks===5){
+noBtn.style.display="none";
+alarm.play();
+if(navigator.vibrate)navigator.vibrate(3000);
+flash.style.display="block";
+setTimeout(()=>flash.style.display="none",3000);
 
-    noBtn.style.left = newX + "px";
-    noBtn.style.top = newY + "px";
+q.innerText="حاج تكبسي نو احسنلك 😠";
+q.classList.add("warning");
 
-    if (noClicks === 5) {
-      alarm.play();
-      if (navigator.vibrate) navigator.vibrate(3000);
+cd.style.display="block";
+let n=3;
+cd.innerText=n;
+let timer=setInterval(()=>{
+n--;
+cd.innerText=n;
+if(n===0){
+clearInterval(timer);
+cd.style.display="none";
+bigYes();
+bgHearts();
+}
+},1000);
+}
+};
 
-      flash.style.display = "block";
-      flash.style.animation = "flash 0.25s infinite";
-      setTimeout(() => {
-        flash.style.display = "none";
-        flash.style.animation = "";
-      }, 3000);
+function bigYes(){
+yesBtn.style.position="fixed";
+yesBtn.style.left="50%";
+yesBtn.style.top="60%";
+yesBtn.style.transform="translate(-50%,-50%) scale(2.2)";
+yesBtn.style.fontSize="36px";
+yesBtn.classList.add("pulse");
+}
 
-      question.innerText = "حاج تكبسي نو احسنلك 😠";
+function bgHearts(){
+setInterval(()=>{
+let h=document.createElement("div");
+h.className="bg-heart";
+h.innerText="❤️";
+h.style.left=Math.random()*window.innerWidth+"px";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),20000);
+},1500);
+}
 
-      yesBtn.style.position = "fixed";
-      yesBtn.style.left = "50%";
-      yesBtn.style.top = "50%";
-      yesBtn.style.transform = "translate(-50%, -50%) scale(2.2)";
-      yesBtn.style.fontSize = "36px";
-    }
-  });
+yesBtn.onclick=()=>{
+music.play();
+yesBtn.style.display="none";
 
-  yesBtn.addEventListener("click", () => {
-    question.innerText =
-      "I knew you wouldn’t say no forever 😉🫂❤️\n" +
-      "I love you my little beautiful stupid princess 💋\n" +
-      "Happy Valentine ❤️";
-
-    yesBtn.style.display = "none";
-    noBtn.style.display = "none";
-
-    setInterval(() => {
-      for (let i = 0; i < 30; i++) createHeart();
-    }, 180);
-  });
-
-  function createHeart() {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerText = "❤️";
-    heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.fontSize = 18 + Math.random() * 40 + "px";
-    heart.style.animationDuration = 2 + Math.random() * 2 + "s";
-   document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 6000);
-  }
-</script>
-
-</body>
-</html>
+typeText(
