@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,10 +45,11 @@
     border-radius: 10px;
     cursor: pointer;
     position: absolute;
+    transition: left 0.2s ease, top 0.2s ease;
   }
 
   #yesBtn { background-color: #ff4d6d; color: white; left: 0; top: 0; }
-  #noBtn { background-color: #ccc; left: auto; right: 0; top: 0; }
+  #noBtn { background-color: #ccc; right: 0; top: 0; }
 
   .heart {
     position: fixed;
@@ -110,11 +113,18 @@ Will you be my valentine?
   noBtn.addEventListener("click", () => {
     noClicks++;
 
-    const maxX = window.innerWidth - noBtn.offsetWidth - 10;
-    const maxY = window.innerHeight - noBtn.offsetHeight - 10;
+    const btnWidth = noBtn.offsetWidth;
+    const btnHeight = noBtn.offsetHeight;
 
-    noBtn.style.left = Math.random() * maxX + "px";
-    noBtn.style.top = Math.random() * maxY + "px";
+    const maxX = window.innerWidth - btnWidth - 10;
+    const maxY = window.innerHeight - btnHeight - 10;
+
+    // حركة مضحكة: توليد مكان عشوائي داخل الشاشة فقط
+    const newLeft = Math.random() * maxX;
+    const newTop = Math.random() * maxY;
+
+    noBtn.style.left = newLeft + "px";
+    noBtn.style.top = newTop + "px";
 
     if (noClicks >= 5) {
       alarm.play();
