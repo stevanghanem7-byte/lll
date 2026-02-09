@@ -43,6 +43,7 @@
     border-radius: 10px;
     cursor: pointer;
     position: absolute;
+    transition: left 0.2s ease, top 0.2s ease;
   }
 
   #yesBtn { background-color: #ff4d6d; color: white; left: 0; top: 0; }
@@ -110,11 +111,20 @@ Will you be my valentine?
   noBtn.addEventListener("click", () => {
     noClicks++;
 
-    const maxX = window.innerWidth - noBtn.offsetWidth - 10;
-    const maxY = window.innerHeight - noBtn.offsetHeight - 10;
+    const btnWidth = noBtn.offsetWidth;
+    const btnHeight = noBtn.offsetHeight;
+    const maxX = window.innerWidth - btnWidth - 10;
+    const maxY = window.innerHeight - btnHeight - 10;
 
-    noBtn.style.left = Math.random() * maxX + "px";
-    noBtn.style.top = Math.random() * maxY + "px";
+    // حركة مضحكة: يتحرك بمسافة عشوائية كبيرة داخل حدود الشاشة
+    const jumpX = Math.random() * 200 + 50; 
+    const jumpY = Math.random() * 200 + 50;
+
+    let newLeft = (noBtn.offsetLeft + jumpX) % maxX;
+    let newTop = (noBtn.offsetTop + jumpY) % maxY;
+
+    noBtn.style.left = newLeft + "px";
+    noBtn.style.top = newTop + "px";
 
     if (noClicks >= 5) {
       alarm.play();
@@ -162,3 +172,4 @@ Will you be my valentine?
 
 </body>
 </html>
+
